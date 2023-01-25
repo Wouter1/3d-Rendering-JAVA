@@ -1,120 +1,123 @@
 package trrt.rendering3d.gameObject;
-import trrt.rendering3d.primitives.*;
+
 import java.io.Serializable;
 
-public class Transform implements Serializable
-{
-    private static final long serialVersionUID = 1;
+import trrt.rendering3d.primitives.Matrix3x3;
+import trrt.rendering3d.primitives.Quaternion;
+import trrt.rendering3d.primitives.Vector3;
 
-    /** the game object parent that the transform is attached to */
-    private GameObject gameObject;
+public class Transform implements Serializable {
+	private static final long serialVersionUID = 1;
 
-    /** position of the Transform in worldspace */
-    private Vector3 position; 
+	/** the game object parent that the transform is attached to */
+	private GameObject gameObject;
 
-    /**the forward vector of the transform in world space. This is always the z-axis in local transform space*/
-    private Vector3 forward; 
+	/** position of the Transform in worldspace */
+	private Vector3 position;
 
-    /**the rightwards vector of the transform in world space. This is always the x-axis in local transform space. */
-    private Vector3 right; 
+	/**
+	 * the forward vector of the transform in world space. This is always the
+	 * z-axis in local transform space
+	 */
+	private Vector3 forward;
 
-    /**the upwards vector of the transform in world space. This is always the y-axis in local transform space. */
-    private Vector3 up; 
+	/**
+	 * the rightwards vector of the transform in world space. This is always the
+	 * x-axis in local transform space.
+	 */
+	private Vector3 right;
 
-    /**the quaternion rotation of the transform*/
-    private Quaternion rotation;
+	/**
+	 * the upwards vector of the transform in world space. This is always the
+	 * y-axis in local transform space.
+	 */
+	private Vector3 up;
 
-    /**default rotation always {@link Quaternion#IDENTITY}*/
-    public Transform(Vector3 positionIn)
-    {
-        position = positionIn;
-        rotation = new Quaternion(1, 0, 0, 0);
-        forward = new Vector3(0, 0, 1);
-        right = new Vector3(1, 0, 0);
-        up = new Vector3(0, 1, 0);
-    }
+	/** the quaternion rotation of the transform */
+	private Quaternion rotation;
 
-    public void setPosition(Vector3 positionIn)
-    {
-        gameObject.getMesh().translate(Vector3.subtract(positionIn, position));
-        position = positionIn;
-    }
+	/** default rotation always {@link Quaternion#IDENTITY} */
+	public Transform(Vector3 positionIn) {
+		position = positionIn;
+		rotation = new Quaternion(1, 0, 0, 0);
+		forward = new Vector3(0, 0, 1);
+		right = new Vector3(1, 0, 0);
+		up = new Vector3(0, 1, 0);
+	}
 
-    public void move(Vector3 amount)
-    {
-        gameObject.getMesh().translate(amount);
-        position = Vector3.add(position, amount);
-    }
+	public void setPosition(Vector3 positionIn) {
+		gameObject.getMesh().translate(positionIn.subtract(position));
+		position = positionIn;
+	}
 
-    public void rotate(Quaternion q)
-    {
-        rotation = Quaternion.multiply(rotation, q);
-        gameObject.getMesh().rotate(q, position);
-        forward.rotate(q);
-        right.rotate(q);
-        up.rotate(q);
-    }
+	public void move(Vector3 amount) {
+		gameObject.getMesh().translate(amount);
+		position = Vector3.add(position, amount);
+	}
 
-    /**
-     * returns the world-space equivilant of {@code point} in local space. 
-     * example: in local space, the forward direction can always be 
-     * represented by (0, 0, 1), but translating that into world space will 
-     * return the instance's {@code forward} vector, which could be something like (0, 0.3, 0.4) if 
-     * the transform is pitched up. 
-     * @param point the point to transform 
-     * @return the world space coordinate
-     */
-    public Vector3 transformToWorld(Vector3 point)
-    {
-        up = up.getNormalized();
-        forward = forward.getNormalized();
-        right = right.getNormalized();
-        return Vector3.applyMatrix(new Matrix3x3(right, up, forward), point);
-    }
+	public void rotate(Quaternion q) {
+		rotation = Quaternion.multiply(rotation, q);
+		gameObject.getMesh().rotate(q, position);
+		forward.rotate(q);
+		right.rotate(q);
+		up.rotate(q);
+	}
 
-    /**
-     * opposite of "transformToWorld". It returns a point with local-space
-     * coordindates equivilant to the inputted world-space coordinates.
-     * @param point the point to transform 
-     * @return the equivilant point in local space 
-     */  
-    public Vector3 transformToLocal(Vector3 point)
-    {
-        up = up.getNormalized();
-        forward = forward.getNormalized();
-        right = right.getNormalized();
-        return Vector3.applyMatrix(new Matrix3x3(right, up, forward).getInverse(), point);
-    }
+	/**
+	 * returns the world-space equivilant of {@code point} in local space.
+	 * example: in local space, the forward direction can always be represented
+	 * by (0, 0, 1), but translating that into world space will return the
+	 * instance's {@code forward} vector, which could be something like (0, 0.3,
+	 * 0.4) if the transform is pitched up.
+	 * 
+	 * @param point the point to transform
+	 * @return the world space coordinate
+	 */
+	public Vector3 transformToWorld(Vector3 point) {
+		up = up.getNormalized();
+		forward = forward.getNormalized();
+		right = right.getNormalized();
+		return Vector3.applyMatrix(new Matrix3x3(right, up, forward), point);
+	}
 
-    //#region getter/setter methods
-    public Vector3 getForward()
-    {
-        return (forward = forward.getNormalized());
-    }
+	/**
+	 * opposite of "transformToWorld". It returns a point with local-space
+	 * coordindates equivilant to the inputted world-space coordinates.
+	 * 
+	 * @param point the point to transform
+	 * @return the equivilant point in local space
+	 */
+	public Vector3 transformToLocal(Vector3 point) {
+		up = up.getNormalized();
+		forward = forward.getNormalized();
+		right = right.getNormalized();
+		return Vector3.applyMatrix(
+				new Matrix3x3(right, up, forward).getInverse(), point);
+	}
 
-    public Vector3 getUp()
-    {
-        return (up = up.getNormalized());
-    }
+	// #region getter/setter methods
+	public Vector3 getForward() {
+		return (forward = forward.getNormalized());
+	}
 
-    public Vector3 getRight()
-    {
-        return (right = right.getNormalized());
-    }
+	public Vector3 getUp() {
+		return (up = up.getNormalized());
+	}
 
-    public Vector3 getPosition()
-    {
-        return position;
-    }
+	public Vector3 getRight() {
+		return (right = right.getNormalized());
+	}
 
-    public GameObject getGameObject()
-    {
-        return gameObject;
-    }
+	public Vector3 getPosition() {
+		return position;
+	}
 
-    public void setGameObject(GameObject gameObjectIn)
-    {
-        gameObject = gameObjectIn;
-    }
-    //#endregion
+	public GameObject getGameObject() {
+		return gameObject;
+	}
+
+	public void setGameObject(GameObject gameObjectIn) {
+		gameObject = gameObjectIn;
+	}
+	// #endregion
 }

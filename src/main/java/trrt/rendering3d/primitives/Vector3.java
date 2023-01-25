@@ -207,17 +207,17 @@ public class Vector3 implements Serializable {
 		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
 
-	/**
-	 * preforms vector {@code a} minus {@code b}. This will return the a vector
-	 * who's start point is {@code b} and terminal point is {@code a}
-	 * 
-	 * @param a vector
-	 * @param b vector
-	 * @return {@code a - b}
-	 */
-	public static Vector3 subtract(Vector3 a, Vector3 b) {
-		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
-	}
+//	/**
+//	 * preforms vector {@code a} minus {@code b}. This will return the a vector
+//	 * who's start point is {@code b} and terminal point is {@code a}
+//	 * 
+//	 * @param a vector
+//	 * @param b vector
+//	 * @return {@code a - b}
+//	 */
+//	public static Vector3 subtract(Vector3 a, Vector3 b) {
+//		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+//	}
 
 	/**
 	 * 
@@ -270,13 +270,10 @@ public class Vector3 implements Serializable {
 	 */
 	public static Vector3 getIntersectionPoint(Vector3 lineDirection,
 			Vector3 linePoint, Plane plane) {
-		return Vector3.add(linePoint,
-				Vector3.multiply(lineDirection,
-						Vector3.dotProduct(
-								Vector3.subtract(plane.pointOnPlane, linePoint),
-								plane.normal)
-								/ Vector3.dotProduct(lineDirection,
-										plane.normal)));
+		return Vector3.add(linePoint, Vector3.multiply(lineDirection,
+				Vector3.dotProduct(plane.pointOnPlane.subtract(linePoint),
+						plane.normal)
+						/ Vector3.dotProduct(lineDirection, plane.normal)));
 	}
 
 	/**
@@ -298,9 +295,9 @@ public class Vector3 implements Serializable {
 	 */
 	public static double distanceToLine(Vector3 point, Vector3 lineP1,
 			Vector3 lineP2) {
-		return (Vector3.crossProduct(Vector3.subtract(point, lineP1),
-				Vector3.subtract(lineP1, lineP2)).getMagnitude())
-				/ (Vector3.subtract(lineP2, lineP1).getMagnitude());
+		return (Vector3
+				.crossProduct(point.subtract(lineP1), lineP1.subtract(lineP2))
+				.getMagnitude()) / (lineP2.subtract(lineP1).getMagnitude());
 	}
 
 	/**
@@ -421,10 +418,9 @@ public class Vector3 implements Serializable {
 	 * @return {@code vector} projected onto a plane {@code planeNormal}
 	 */
 	public static Vector3 projectToPlane(Vector3 vector, Vector3 planeNormal) {
-		return Vector3.subtract(vector,
-				Vector3.multiply(planeNormal,
-						Vector3.dotProduct(vector, planeNormal)
-								/ planeNormal.getSqrMagnitude()));
+		return vector.subtract(Vector3.multiply(planeNormal,
+				Vector3.dotProduct(vector, planeNormal)
+						/ planeNormal.getSqrMagnitude()));
 	}
 
 	/**
@@ -458,8 +454,7 @@ public class Vector3 implements Serializable {
 	 * @return the interpolated Vector
 	 */
 	public static Vector3 lerp(Vector3 start, Vector3 end, double time) {
-		return Vector3.add(start,
-				Vector3.multiply(Vector3.subtract(end, start), time));
+		return Vector3.add(start, Vector3.multiply(end.subtract(start), time));
 	}
 
 	/**

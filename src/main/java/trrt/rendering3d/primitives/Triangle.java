@@ -116,8 +116,8 @@ public class Triangle implements Serializable {
 		// get the angle between the normal of the triangle face and the
 		// direction of the light.
 		double angle = Vector3.getAngleBetween(lighting.lightDirection,
-				Vector3.crossProduct(Vector3.subtract(vertex1, vertex2),
-						Vector3.subtract(vertex2, vertex3)));
+				Vector3.crossProduct(vertex1.subtract(vertex2),
+						vertex2.subtract(vertex3)));
 
 		// determine brightness and darkness.
 		if (angle > Math.PI / 2)

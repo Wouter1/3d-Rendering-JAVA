@@ -364,16 +364,16 @@ public class RenderingPanel extends JPanel implements Runnable {
 	// painting later.
 	private void calculateTriangle(Triangle triangle) {
 		Vector3 triangleCenter = triangle.getCenter();
-		double distanceToTriangle = Vector3.subtract(triangleCenter, camPos)
+		double distanceToTriangle = triangleCenter.subtract(camPos)
 				.getMagnitude();
 		if (distanceToTriangle > maxTriangleDistance)
 			maxTriangleDistance = distanceToTriangle;
 		else if (distanceToTriangle < minTriangleDistance)
 			minTriangleDistance = distanceToTriangle;
 		if (Vector3.dotProduct(triangle.getPlane().normal,
-				Vector3.subtract(triangleCenter, camPos)) > 0 // is the triangle
-																// facing away?
-				|| Vector3.dotProduct(Vector3.subtract(triangleCenter, camPos),
+				triangleCenter.subtract(camPos)) > 0 // is the triangle
+														// facing away?
+				|| Vector3.dotProduct(triangleCenter.subtract(camPos),
 						camDirection) <= 0 // is the triangle behind the camera?
 				|| distanceToTriangle >= camera.getFarClipDistancee() // is the
 																		// triangle
@@ -402,11 +402,11 @@ public class RenderingPanel extends JPanel implements Runnable {
 
 		// get intersection with render plane
 		triangleVertex1 = Vector3.getIntersectionPoint(
-				Vector3.subtract(triangleVertex1, camPos), camPos, renderPlane);
+				triangleVertex1.subtract(camPos), camPos, renderPlane);
 
 		// rotate the point:
 		triangleVertex1 = Vector3.rotate(
-				Vector3.subtract(triangleVertex1, camCenterPoint),
+				triangleVertex1.subtract(camCenterPoint),
 				pointRotationQuaternion);
 
 		// check if it's in the fov
@@ -423,9 +423,9 @@ public class RenderingPanel extends JPanel implements Runnable {
 
 		// repeat for each of the other two vertices
 		triangleVertex2 = Vector3.getIntersectionPoint(
-				Vector3.subtract(triangleVertex2, camPos), camPos, renderPlane);
+				triangleVertex2.subtract(camPos), camPos, renderPlane);
 		triangleVertex2 = Vector3.rotate(
-				Vector3.subtract(triangleVertex2, camCenterPoint),
+				triangleVertex2.subtract(camCenterPoint),
 				pointRotationQuaternion);
 		if ((Math.abs(triangleVertex2.x) < renderPlaneWidth / 2
 				&& Math.abs(triangleVertex2.y) < renderPlaneWidth
@@ -437,9 +437,9 @@ public class RenderingPanel extends JPanel implements Runnable {
 				- triangleVertex2.y * pixelsPerUnit);
 
 		triangleVertex3 = Vector3.getIntersectionPoint(
-				Vector3.subtract(triangleVertex3, camPos), camPos, renderPlane);
+				triangleVertex3.subtract(camPos), camPos, renderPlane);
 		triangleVertex3 = Vector3.rotate(
-				Vector3.subtract(triangleVertex3, camCenterPoint),
+				triangleVertex3.subtract(camCenterPoint),
 				pointRotationQuaternion);
 		if ((Math.abs(triangleVertex3.x) < renderPlaneWidth / 2
 				&& Math.abs(triangleVertex3.y) < renderPlaneWidth

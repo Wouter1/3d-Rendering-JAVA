@@ -86,7 +86,7 @@ public class Mesh implements Serializable {
 			if (modelOffsetAmount == null) {
 				Vector3 com = Mesh.centerOfMass(vertices);
 				for (int i = 0; i < vertices.size(); i++) {
-					vertices.set(i, Vector3.subtract(vertices.get(i), com));
+					vertices.set(i, vertices.get(i).subtract(com));
 				}
 			}
 		} else {
@@ -129,18 +129,10 @@ public class Mesh implements Serializable {
 				Vector3 com = Mesh.centerOfMass(vertices);
 				System.out.println(com);
 				for (int i = 0; i < vertices.size(); i++) {
-					vertices.set(i, Vector3.subtract(vertices.get(i), com));
+					vertices.set(i, vertices.get(i).subtract(com));
 				}
 				triangles = triangles.stream().map(tri -> tri.subtract(com))
 						.collect(Collectors.toList());
-//				for (int i = 0; i < triangles.size(); i++) {
-//					triangles.get(i).vertex1 = Vector3
-//							.subtract(triangles.get(i).vertex1, com);
-//					triangles.get(i).vertex2 = Vector3
-//							.subtract(triangles.get(i).vertex2, com);
-//					triangles.get(i).vertex3 = Vector3
-//							.subtract(triangles.get(i).vertex3, com);
-//			}
 			}
 		} else {
 			System.err.println(
@@ -166,10 +158,9 @@ public class Mesh implements Serializable {
 	public void rotate(Quaternion quaternion, Vector3 centerOfRotation) {
 		for (int i = 0; i < vertices.size(); i++) {
 			vertices.set(i,
-					Vector3.add(
-							Vector3.rotate(Vector3.subtract(vertices.get(i),
-									centerOfRotation), quaternion),
-							centerOfRotation));
+					Vector3.add(Vector3.rotate(
+							vertices.get(i).subtract(centerOfRotation),
+							quaternion), centerOfRotation));
 		}
 	}
 
@@ -184,8 +175,7 @@ public class Mesh implements Serializable {
 			vertices.set(i,
 					Vector3.add(
 							Vector3.applyMatrix(matrix,
-									Vector3.subtract(vertices.get(i),
-											centerOfRotation)),
+									vertices.get(i).subtract(centerOfRotation)),
 							centerOfRotation));
 		}
 	}
