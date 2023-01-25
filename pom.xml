@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>tudelft.shapelanguage</groupId>
+	<artifactId>extractor</artifactId>
+	<version>1.0.0</version>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<passwd>${env.ARTIFACTORY_PASS}</passwd>
+	</properties>
+
+
+	<distributionManagement>
+		<repository>
+			<id>artifactory.ewi.tudelft.nl</id>
+			<url>https://artifactory.ewi.tudelft.nl/artifactory/libs-release</url>
+		</repository>
+	</distributionManagement>
+
+
+	<dependencies>
+
+		<dependency>
+			<groupId>tudelft.utilities</groupId>
+			<artifactId>utilities</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.11.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+	<repositories>
+		<repository>
+			<id>artifactory.ewi.tudelft.nl</id>
+			<url>https://artifactory.ewi.tudelft.nl/artifactory/libs-release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>artifactory.ewi.tudelft.nl</id>
+			<url>https://artifactory.ewi.tudelft.nl/artifactory/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+</project>
