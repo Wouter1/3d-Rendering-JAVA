@@ -40,14 +40,20 @@ public class Matrix3x3 {
 				R3C1, R3C2, R3C3, "|", "|");
 	}
 
-	// returns the determinant of the 3x3 matrix.
+	/**
+	 * @return the determinant of the 3x3 matrix.
+	 * 
+	 */
 	public double getDeterminant() {
 		return R1C1 * (R2C2 * R3C3 - R2C3 * R3C2)
 				- R1C2 * (R2C1 * R3C3 - R2C3 * R3C1)
 				+ R1C3 * (R2C1 * R3C2 - R2C2 * R3C1);
 	}
 
-	// returns the cofactor matrix.
+	/**
+	 * 
+	 * @return the cofactor matrix
+	 */
 	public Matrix3x3 getCofactorMatrix() {
 		return new Matrix3x3(R2C2 * R3C3 - R2C3 * R3C2,
 				-(R2C1 * R3C3 - R2C3 * R3C1), R2C1 * R3C2 - R2C2 * R3C1,
@@ -56,8 +62,11 @@ public class Matrix3x3 {
 				-(R1C1 * R2C3 - R1C3 * R2C1), R1C1 * R2C2 - R1C2 * R2C1);
 	}
 
-	// returns the adjugate matrix, basically just the transposed cofactor
-	// matrix.
+	/**
+	 * 
+	 * @return the adjugate matrix, basically just the transposed cofactor
+	 *         matrix
+	 */
 	public Matrix3x3 getAdjugateMatrix() {
 		return new Matrix3x3(R2C2 * R3C3 - R2C3 * R3C2,
 				-(R1C2 * R3C3 - R1C3 * R3C2), R1C2 * R2C3 - R1C3 * R2C2,
@@ -66,107 +75,43 @@ public class Matrix3x3 {
 				-(R1C1 * R3C2 - R1C2 * R3C1), R1C1 * R2C2 - R1C2 * R2C1);
 	}
 
-	// returns the inverse of the matrix, which is just the adjugate/det
+	/**
+	 * 
+	 * @return the inverse of the matrix, which is just the adjugate/det NOTE
+	 *         this will be unstable if det approaches 0 and you will get div by
+	 *         zero error if matrix is singular.
+	 */
 	public Matrix3x3 getInverse() {
-		return Matrix3x3.multiply(getAdjugateMatrix(), 1 / getDeterminant());
+		return getAdjugateMatrix().multiply(1 / getDeterminant());
 	}
 
-	// #region ----------- static methods -------------
-
-	// applies matrix m1 to matrix m2 and returns the resulting matrix. order
-	// matters!
-	public static Matrix3x3 multiply(Matrix3x3 m1, Matrix3x3 m2) {
-		return new Matrix3x3(
-				m1.R1C1 * m2.R1C1 + m1.R1C2 * m2.R2C1 + m1.R1C3 * m2.R3C1,
-				m1.R1C1 * m2.R1C2 + m1.R1C2 * m2.R2C2 + m1.R1C3 * m2.R3C2,
-				m1.R1C1 * m2.R1C3 + m1.R1C2 * m2.R2C3 + m1.R1C3 * m2.R3C3,
-				m1.R2C1 * m2.R1C1 + m1.R2C2 * m2.R2C1 + m1.R2C3 * m2.R3C1,
-				m1.R2C1 * m2.R1C2 + m1.R2C2 * m2.R2C2 + m1.R2C3 * m2.R3C2,
-				m1.R2C1 * m2.R1C3 + m1.R2C2 * m2.R2C3 + m1.R2C3 * m2.R3C3,
-				m1.R3C1 * m2.R1C1 + m1.R3C2 * m2.R2C1 + m1.R3C3 * m2.R3C1,
-				m1.R3C1 * m2.R1C2 + m1.R3C2 * m2.R2C2 + m1.R3C3 * m2.R3C2,
-				m1.R3C1 * m2.R1C3 + m1.R3C2 * m2.R2C3 + m1.R3C3 * m2.R3C3);
+	/**
+	 * 
+	 * @param m2
+	 * @return this.m2 so this matrix multiplied with m2
+	 */
+	public Matrix3x3 multiply(Matrix3x3 m2) {
+		return new Matrix3x3(R1C1 * m2.R1C1 + R1C2 * m2.R2C1 + R1C3 * m2.R3C1,
+				R1C1 * m2.R1C2 + R1C2 * m2.R2C2 + R1C3 * m2.R3C2,
+				R1C1 * m2.R1C3 + R1C2 * m2.R2C3 + R1C3 * m2.R3C3,
+				R2C1 * m2.R1C1 + R2C2 * m2.R2C1 + R2C3 * m2.R3C1,
+				R2C1 * m2.R1C2 + R2C2 * m2.R2C2 + R2C3 * m2.R3C2,
+				R2C1 * m2.R1C3 + R2C2 * m2.R2C3 + R2C3 * m2.R3C3,
+				R3C1 * m2.R1C1 + R3C2 * m2.R2C1 + R3C3 * m2.R3C1,
+				R3C1 * m2.R1C2 + R3C2 * m2.R2C2 + R3C3 * m2.R3C2,
+				R3C1 * m2.R1C3 + R3C2 * m2.R2C3 + R3C3 * m2.R3C3);
 	}
 
+	/**
+	 * 
+	 * @param scalar
+	 * @return this*scalar (=all elements multiplied by scalar)
+	 */
 	// multiplies a matrix by a scalar value
-	public static Matrix3x3 multiply(Matrix3x3 matrix, double scalar) {
-		return new Matrix3x3(matrix.R1C1 * scalar, matrix.R1C2 * scalar,
-				matrix.R1C3 * scalar, matrix.R2C1 * scalar,
-				matrix.R2C2 * scalar, matrix.R2C3 * scalar,
-				matrix.R3C1 * scalar, matrix.R3C2 * scalar,
-				matrix.R3C3 * scalar);
+	public Matrix3x3 multiply(double scalar) {
+		return new Matrix3x3(R1C1 * scalar, R1C2 * scalar, R1C3 * scalar,
+				R2C1 * scalar, R2C2 * scalar, R2C3 * scalar, R3C1 * scalar,
+				R3C2 * scalar, R3C3 * scalar);
 	}
 
-	//
-	public static Matrix3x3 rotationMatrixAxisX(double angle) {
-		// local variables to mitigate preforming the same slow trig function
-		// multiple times.
-		double sinAngle = Math.sin(angle);
-		double cosAngle = Math.sqrt(1 - sinAngle * sinAngle); // same as
-																// math.cos
-																// function
-
-		/*
-		 * | cos -sin 0 | | sin cos 0 | | 0 0 1 |
-		 */
-
-		return new Matrix3x3(1, 0, 0, 0, cosAngle, -sinAngle, 0, sinAngle,
-				cosAngle);
-	}
-
-	public static Matrix3x3 rotationMatrixAxisY(double angle) {
-		// local variables to mitigate preforming the same slow trig function
-		// multiple times.
-		double sinAngle = Math.sin(angle);
-		double cosAngle = Math.sqrt(1 - sinAngle * sinAngle); // same as
-																// math.cos
-																// function
-
-		/*
-		 * | cos 0 sin | | 0 1 0 | |-sin 0 cos |
-		 */
-
-		return new Matrix3x3(cosAngle, 0, sinAngle, 0, 1, 0, -sinAngle, 0,
-				cosAngle);
-	}
-
-	public static Matrix3x3 rotationMatrixAxisZ(double angle) {
-		// local variables to mitigate preforming the same slow trig function
-		// multiple times.
-		double sinAngle = Math.sin(angle);
-		double cosAngle = Math.sqrt(1 - sinAngle * sinAngle); // same as
-																// math.cos
-																// function
-
-		/*
-		 * | cos -sin 0 | | sin cos 0 | | 0 0 1 |
-		 */
-
-		return new Matrix3x3(cosAngle, -sinAngle, 0, sinAngle, cosAngle, 0, 0,
-				0, 1);
-	}
-
-	// returns a matrix which can preform a rotation "angle" radians about
-	// "axis"
-	public static Matrix3x3 axisAngleMatrix(Vector3 axis, double angle) {
-		axis = axis.getNormalized();
-
-		// local variables to mitigate preforming the same slow trig function
-		// multiple times.
-		double sin = Math.sin(angle);
-		double cos = Math.sqrt(1 - sin * sin); // same as math.cos function
-		double cos1 = 1 - cos;
-
-		return new Matrix3x3(cos + axis.x * axis.x * cos1,
-				axis.x * axis.y * cos1 - axis.z * sin,
-				axis.x * axis.z * cos1 + axis.y * sin,
-				axis.y * axis.x * cos1 + axis.z * sin,
-				cos + axis.y * axis.y * cos1,
-				axis.y * axis.z * cos1 - axis.x * sin,
-				axis.z * axis.x * cos1 - axis.y * sin,
-				axis.z * axis.y * cos1 + axis.x * sin,
-				cos + axis.z * axis.z * cos1);
-	}
-
-	// #endregion
 }
