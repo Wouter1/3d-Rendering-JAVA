@@ -171,11 +171,9 @@ public class Mesh implements Serializable {
 	 */
 	public void applyMatrix(Matrix3x3 matrix, Vector3 centerOfRotation) {
 		for (int i = 0; i < vertices.size(); i++) {
-			vertices.set(i,
-					Vector3.add(
-							Vector3.applyMatrix(matrix,
-									vertices.get(i).subtract(centerOfRotation)),
-							centerOfRotation));
+			vertices.set(i, Vector3.add(
+					vertices.get(i).subtract(centerOfRotation).multiply(matrix),
+					centerOfRotation));
 		}
 	}
 

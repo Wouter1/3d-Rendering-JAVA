@@ -77,7 +77,7 @@ public class Transform implements Serializable {
 		up = up.getNormalized();
 		forward = forward.getNormalized();
 		right = right.getNormalized();
-		return Vector3.applyMatrix(new Matrix3x3(right, up, forward), point);
+		return point.multiply(new Matrix3x3(right, up, forward));
 	}
 
 	/**
@@ -91,8 +91,7 @@ public class Transform implements Serializable {
 		up = up.getNormalized();
 		forward = forward.getNormalized();
 		right = right.getNormalized();
-		return Vector3.applyMatrix(
-				new Matrix3x3(right, up, forward).getInverse(), point);
+		return point.multiply(new Matrix3x3(right, up, forward).getInverse());
 	}
 
 	// #region getter/setter methods

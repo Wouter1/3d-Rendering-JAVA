@@ -176,6 +176,17 @@ public class Vector3 implements Serializable {
 		return new Quaternion(0, x, y, z);
 	}
 
+	/**
+	 * @param matrix the multiplier
+	 * @return this.matrix, so this inner product with matrix.
+	 *         row1=vector*matrix row 1, etc.
+	 */
+	public Vector3 multiply(Matrix3x3 matrix) {
+		return new Vector3(x * matrix.R1C1 + y * matrix.R1C2 + z * matrix.R1C3,
+				x * matrix.R2C1 + y * matrix.R2C2 + z * matrix.R2C3,
+				x * matrix.R3C1 + y * matrix.R3C2 + z * matrix.R3C3);
+	}
+
 //============================= static methods ===============================
 
 	/**
@@ -407,116 +418,99 @@ public class Vector3 implements Serializable {
 				Vector3.dotProduct(new Vector3(0, 0, 1), point));
 	}
 
-	/**
-	 * returns the orthagonal projection of the inputted vector onto a plane
-	 * that intersects the origin and has the normal vector {@code planeNormal}.
-	 * It first calculates the orthagonal projection of the inputted vector onto
-	 * the normal vector directly, then subtracts that vector from the inputted
-	 * vector which gives the orthagonal projection onto a plane. formula where
-	 * {@code u} is the inputted vector and {@code n} is the normal vector:
-	 * 
-	 * <pre>
-	 *   projPlane(u) = u-[(u dot n)/(||n||^2)]n
-	 * </pre>
-	 * 
-	 * @param vector      the vector to be projected
-	 * @param planeNormal a vector normal to the plane
-	 * @return {@code vector} projected onto a plane {@code planeNormal}
-	 */
-	public static Vector3 projectToPlane(Vector3 vector, Vector3 planeNormal) {
-		return vector.subtract(Vector3.multiply(planeNormal,
-				Vector3.dotProduct(vector, planeNormal)
-						/ planeNormal.getSqrMagnitude()));
-	}
+//	/**
+//	 * returns the orthagonal projection of the inputted vector onto a plane
+//	 * that intersects the origin and has the normal vector {@code planeNormal}.
+//	 * It first calculates the orthagonal projection of the inputted vector onto
+//	 * the normal vector directly, then subtracts that vector from the inputted
+//	 * vector which gives the orthagonal projection onto a plane. formula where
+//	 * {@code u} is the inputted vector and {@code n} is the normal vector:
+//	 * 
+//	 * <pre>
+//	 *   projPlane(u) = u-[(u dot n)/(||n||^2)]n
+//	 * </pre>
+//	 * 
+//	 * @param vector      the vector to be projected
+//	 * @param planeNormal a vector normal to the plane
+//	 * @return {@code vector} projected onto a plane {@code planeNormal}
+//	 */
+//	public static Vector3 projectToPlane(Vector3 vector, Vector3 planeNormal) {
+//		return vector.subtract(Vector3.multiply(planeNormal,
+//				Vector3.dotProduct(vector, planeNormal)
+//						/ planeNormal.getSqrMagnitude()));
+//	}
 
-	/**
-	 * projects a orthagonally onto b
-	 * 
-	 * <pre>
-	 * projb(a) = ((a dot b)/(b dot b))b
-	 * </pre>
-	 * 
-	 * @param a vector to be projected
-	 * @param b vector recieving the projection
-	 * @return a projected onto b
-	 */
-	public static Vector3 projectToVector(Vector3 a, Vector3 b) {
-		return Vector3.multiply(b,
-				Vector3.dotProduct(b, a) / b.getSqrMagnitude());
-	}
+//	/**
+//	 * projects a orthagonally onto b
+//	 * 
+//	 * <pre>
+//	 * projb(a) = ((a dot b)/(b dot b))b
+//	 * </pre>
+//	 * 
+//	 * @param a vector to be projected
+//	 * @param b vector recieving the projection
+//	 * @return a projected onto b
+//	 */
+//	public static Vector3 projectToVector(Vector3 a, Vector3 b) {
+//		return Vector3.multiply(b,
+//				Vector3.dotProduct(b, a) / b.getSqrMagnitude());
+//	}
 
-	/**
-	 * linearly interpolates between two vectors. Interpolated value is:
-	 * 
-	 * <pre>
-	 * start + (end - start) * time
-	 * </pre>
-	 * 
-	 * time value of 1 would return the end result, and 0 would return the start
-	 * 
-	 * @param start the starting value for interpolation
-	 * @param end   the ending value of the interpolation
-	 * @param time  the amount of interpolation as a range from 0 to 1
-	 * @return the interpolated Vector
-	 */
-	public static Vector3 lerp(Vector3 start, Vector3 end, double time) {
-		return Vector3.add(start, Vector3.multiply(end.subtract(start), time));
-	}
+//	/**
+//	 * linearly interpolates between two vectors. Interpolated value is:
+//	 * 
+//	 * <pre>
+//	 * start + (end - start) * time
+//	 * </pre>
+//	 * 
+//	 * time value of 1 would return the end result, and 0 would return the start
+//	 * 
+//	 * @param start the starting value for interpolation
+//	 * @param end   the ending value of the interpolation
+//	 * @param time  the amount of interpolation as a range from 0 to 1
+//	 * @return the interpolated Vector
+//	 */
+//	public static Vector3 lerp(Vector3 start, Vector3 end, double time) {
+//		return Vector3.add(start, Vector3.multiply(end.subtract(start), time));
+//	}
 
-	/**
-	 * returns the inputted vector rotated {@code angle} degrees around
-	 * {@code axis}, useful for axis-angle representation. Uses Rodrigues'
-	 * rotation formula, where a is the angle, e is a unit vector representing
-	 * the axis of rotation and v is the vector to be rotated:
-	 * 
-	 * <pre>
-	 *   rotV = cos(a)v + sin(a)(e cross v) + (1 - cos(a))(e dot v)e
-	 * </pre>
-	 * <p id="fail-fast">
-	 * This is intended for single time and single point use. Using this method
-	 * to transform an array of points may be very slow. Instead, generate a
-	 * single {@code Matrix3x3} using the
-	 * {@link Matrix3x3#axisAngleMatrix(Vector3, double)} method and apply that
-	 * matrix to all the desired points.
-	 * 
-	 * @param axis   the axis of rotation as a Vector3. This will be normalized
-	 *               if not already
-	 * @param angle  the angle of rotation in radians
-	 * @param vector the {@code Vector3} object for the rotation to be applied
-	 *               to
-	 * @return the rotated vector
-	 */
-	public static Vector3 axisAngleRotation(Vector3 axis, double angle,
-			Vector3 vector) {
-		axis = axis.getNormalized(); // makes sure axis is normalized
-		double cosAngle = Math.cos(angle); // local variable to mitigate
-											// preforming the cos function
-											// twice.
-		return Vector3.add(
-				Vector3.add(Vector3.multiply(vector, cosAngle),
-						Vector3.multiply(
-								Vector3.multiply(axis,
-										Vector3.dotProduct(vector, axis)),
-								1 - cosAngle)),
-				Vector3.multiply(Vector3.crossProduct(axis, vector),
-						Math.sin(angle)));
-	}
-
-	/**
-	 * multiplies the vector by the matrix
-	 * 
-	 * @param matrix matrix multiplier
-	 * @param vector vector to be multiplied
-	 * @return the transformed vector
-	 */
-	public static Vector3 applyMatrix(Matrix3x3 matrix, Vector3 vector) {
-		return new Vector3(
-				vector.x * matrix.R1C1 + vector.y * matrix.R1C2
-						+ vector.z * matrix.R1C3,
-				vector.x * matrix.R2C1 + vector.y * matrix.R2C2
-						+ vector.z * matrix.R2C3,
-				vector.x * matrix.R3C1 + vector.y * matrix.R3C2
-						+ vector.z * matrix.R3C3);
-	}
+//	/**
+//	 * returns the inputted vector rotated {@code angle} degrees around
+//	 * {@code axis}, useful for axis-angle representation. Uses Rodrigues'
+//	 * rotation formula, where a is the angle, e is a unit vector representing
+//	 * the axis of rotation and v is the vector to be rotated:
+//	 * 
+//	 * <pre>
+//	 *   rotV = cos(a)v + sin(a)(e cross v) + (1 - cos(a))(e dot v)e
+//	 * </pre>
+//	 * <p id="fail-fast">
+//	 * This is intended for single time and single point use. Using this method
+//	 * to transform an array of points may be very slow. Instead, generate a
+//	 * single {@code Matrix3x3} using the
+//	 * {@link Matrix3x3#axisAngleMatrix(Vector3, double)} method and apply that
+//	 * matrix to all the desired points.
+//	 * 
+//	 * @param axis   the axis of rotation as a Vector3. This will be normalized
+//	 *               if not already
+//	 * @param angle  the angle of rotation in radians
+//	 * @param vector the {@code Vector3} object for the rotation to be applied
+//	 *               to
+//	 * @return the rotated vector
+//	 */
+//	public static Vector3 axisAngleRotation(Vector3 axis, double angle,
+//			Vector3 vector) {
+//		axis = axis.getNormalized(); // makes sure axis is normalized
+//		double cosAngle = Math.cos(angle); // local variable to mitigate
+//											// preforming the cos function
+//											// twice.
+//		return Vector3.add(
+//				Vector3.add(Vector3.multiply(vector, cosAngle),
+//						Vector3.multiply(
+//								Vector3.multiply(axis,
+//										Vector3.dotProduct(vector, axis)),
+//								1 - cosAngle)),
+//				Vector3.multiply(Vector3.crossProduct(axis, vector),
+//						Math.sin(angle)));
+//	}
 
 }
