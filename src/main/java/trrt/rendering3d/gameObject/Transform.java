@@ -56,7 +56,7 @@ public class Transform implements Serializable {
 	}
 
 	public void rotate(Quaternion q) {
-		rotation = Quaternion.multiply(rotation, q);
+		rotation = rotation.multiply(q);
 		gameObject.getMesh().rotate(q, position);
 		forward.rotate(q);
 		right.rotate(q);

@@ -10,10 +10,10 @@ public class Plane {
 			new Vector3(1, 0, 0));
 
 	/** a vector normal to the plane */
-	public Vector3 normal;
+	public final Vector3 normal;
 
 	/** a point on the plane */
-	public Vector3 pointOnPlane;
+	public final Vector3 pointOnPlane;
 
 	/**
 	 * creates a plane object with point {@code pointIn} that lies on the plane
