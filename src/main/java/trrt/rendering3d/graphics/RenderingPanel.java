@@ -405,9 +405,8 @@ public class RenderingPanel extends JPanel implements Runnable {
 				triangleVertex1.subtract(camPos), camPos, renderPlane);
 
 		// rotate the point:
-		triangleVertex1 = Vector3.rotate(
-				triangleVertex1.subtract(camCenterPoint),
-				pointRotationQuaternion);
+		triangleVertex1 = triangleVertex1.subtract(camCenterPoint)
+				.rotate(pointRotationQuaternion);
 
 		// check if it's in the fov
 		if ((Math.abs(triangleVertex1.x) < renderPlaneWidth / 2 * 1.2
@@ -424,9 +423,8 @@ public class RenderingPanel extends JPanel implements Runnable {
 		// repeat for each of the other two vertices
 		triangleVertex2 = Vector3.getIntersectionPoint(
 				triangleVertex2.subtract(camPos), camPos, renderPlane);
-		triangleVertex2 = Vector3.rotate(
-				triangleVertex2.subtract(camCenterPoint),
-				pointRotationQuaternion);
+		triangleVertex2 = triangleVertex2.subtract(camCenterPoint)
+				.rotate(pointRotationQuaternion);
 		if ((Math.abs(triangleVertex2.x) < renderPlaneWidth / 2
 				&& Math.abs(triangleVertex2.y) < renderPlaneWidth
 						* ((double) getHeight() / getWidth()) / 2))
@@ -438,9 +436,8 @@ public class RenderingPanel extends JPanel implements Runnable {
 
 		triangleVertex3 = Vector3.getIntersectionPoint(
 				triangleVertex3.subtract(camPos), camPos, renderPlane);
-		triangleVertex3 = Vector3.rotate(
-				triangleVertex3.subtract(camCenterPoint),
-				pointRotationQuaternion);
+		triangleVertex3 = triangleVertex3.subtract(camCenterPoint)
+				.rotate(pointRotationQuaternion);
 		if ((Math.abs(triangleVertex3.x) < renderPlaneWidth / 2
 				&& Math.abs(triangleVertex3.y) < renderPlaneWidth
 						* ((double) getHeight() / getWidth()) / 2))

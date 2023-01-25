@@ -158,9 +158,8 @@ public class Mesh implements Serializable {
 	public void rotate(Quaternion quaternion, Vector3 centerOfRotation) {
 		for (int i = 0; i < vertices.size(); i++) {
 			vertices.set(i,
-					Vector3.add(Vector3.rotate(
-							vertices.get(i).subtract(centerOfRotation),
-							quaternion), centerOfRotation));
+					Vector3.add(vertices.get(i).subtract(centerOfRotation)
+							.rotate(quaternion), centerOfRotation));
 		}
 	}
 
@@ -282,8 +281,8 @@ public class Mesh implements Serializable {
 
 					// apply transformations to the Vector3 based on offset
 					// params
-					vertexCoordinate = Vector3.rotate(vertexCoordinate,
-							offsetOrientation);
+					vertexCoordinate = vertexCoordinate
+							.rotate(offsetOrientation);
 					vertexCoordinate = Vector3.multiply(vertexCoordinate,
 							scale);
 					if (offsetPosition != null)

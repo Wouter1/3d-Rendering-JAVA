@@ -131,14 +131,20 @@ public class Vector3 implements Serializable {
 	}
 
 	/**
-	 * rotates itself by the specified quaterion and also returns itself as a
-	 * result.
 	 * 
 	 * @param q the quaternion representing the rotation
-	 * @return the resulting vector3 after the rotation
+	 * @return new Vector3 which is this rotated by q.
 	 */
 	public Vector3 rotate(Quaternion q) {
-		return Vector3.rotate(this, q);
+		final double neww = -(q.x * x + q.y * y + q.z * z);
+		final double newx = q.w * x + q.y * z - q.z * y;
+		final double newy = q.w * y + q.z * x - q.x * z;
+		final double newz = q.w * z + q.x * y - q.y * x;
+
+		return new Vector3(q.w * newx - neww * q.x - newy * q.z + newz * q.y,
+				q.w * newy - neww * q.y - newz * q.x + newx * q.z,
+				q.w * newz - neww * q.z - newx * q.y + newy * q.x);
+
 	}
 
 	/**
@@ -513,25 +519,4 @@ public class Vector3 implements Serializable {
 						+ vector.z * matrix.R3C3);
 	}
 
-	/**
-	 * rotates the specified vector by the specified quaternion
-	 * 
-	 * <pre>
-	 * q*(v.x, v.y, v.z, 0)*inverse(q)
-	 * </pre>
-	 * 
-	 * @param v the vector to be rotated
-	 * @param q the rotation to be applied as a quaternion
-	 * @return the resulting vector
-	 */
-	public static Vector3 rotate(Vector3 v, Quaternion q) {
-		final double w = -(q.x * v.x + q.y * v.y + q.z * v.z);
-		final double x = q.w * v.x + q.y * v.z - q.z * v.y;
-		final double y = q.w * v.y + q.z * v.x - q.x * v.z;
-		final double z = q.w * v.z + q.x * v.y - q.y * v.x;
-
-		return new Vector3(q.w * x - w * q.x - y * q.z + z * q.y,
-				q.w * y - w * q.y - z * q.x + x * q.z,
-				q.w * z - w * q.z - x * q.y + y * q.x);
-	}
 }
